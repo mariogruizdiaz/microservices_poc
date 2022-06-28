@@ -14,9 +14,7 @@
     "lib"
   ],
   "scripts": {
-    "test": "echo \"Error: run tests from root\" && exit 1",
-    "build": "npx tsc --declaration",
-    "start": "npm run build && node build/index.js"
+    "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "devDependencies": {
     "typescript": "^4.7.4"
