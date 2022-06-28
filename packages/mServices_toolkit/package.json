@@ -1,0 +1,27 @@
+{
+  "name": "mservices_toolkit",
+  "version": "0.0.0",
+  "description": "> TODO: description",
+  "author": "Mario Ruiz Diaz <mariogrd@gmail.com>",
+  "homepage": "",
+  "license": "ISC",
+  "main": "lib/mServices_toolkit.js",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1",
+    "build": "npx tsc --declaration",
+    "start": "npm run build && node build/index.js"
+  },
+  "devDependencies": {
+    "typescript": "^4.7.4"
+  },
+  "dependencies": {
+    "ts-nats": "^1.2.15"
+  }
+}
