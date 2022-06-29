@@ -1,5 +1,6 @@
-import { FwURlRequest, MessagingService, FwUrlResponse } from "mservices_toolkit";
-
+import { FwURlRequest } from "mservices_toolkit/lib/enterprise_service_bus/model/fw/FwURlRequest";
+import { FwUrlResponse } from "mservices_toolkit/lib/enterprise_service_bus/model/fw/FwUrlResponse";
+import { MessagingService } from "mservices_toolkit/lib/enterprise_service_bus/service/MessagingService";
 
 export class FwUrlBuilder {
     public static serviceName = "Fw Url Builder";

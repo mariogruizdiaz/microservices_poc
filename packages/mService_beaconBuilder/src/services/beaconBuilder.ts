@@ -1,4 +1,5 @@
-import { MessagingService, BeaconResponse } from "mservices_toolkit";
+import { MessagingService } from "mservices_toolkit/lib/enterprise_service_bus/service/MessagingService";
+import { BeaconResponse } from "mservices_toolkit/lib/enterprise_service_bus/model/beacon/BeaconResponse";
 
 
 export class BeaconBuilder {

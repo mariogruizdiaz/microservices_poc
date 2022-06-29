@@ -1,7 +1,10 @@
 import express from "express";
 import 'dotenv/config';
 import { getAds } from "./fakes/AdRequesterService";
-import { BeaconRequest, FwURlRequest, FwUrlResponse, MessagingService } from "mservices_toolkit";
+import { FwURlRequest } from "mservices_toolkit/lib/enterprise_service_bus/model/fw/FwURlRequest";
+import { FwUrlResponse } from "mservices_toolkit/lib/enterprise_service_bus/model/fw/FwUrlResponse";
+import { MessagingService } from "mservices_toolkit/lib/enterprise_service_bus/service/MessagingService";
+import { BeaconRequest } from "mservices_toolkit/lib/enterprise_service_bus/model/beacon/BeaconRequest";
 
 
 

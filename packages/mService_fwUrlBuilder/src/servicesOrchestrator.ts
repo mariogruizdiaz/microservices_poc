@@ -1,5 +1,6 @@
+import { MessaginRequestSubjects } from "mservices_toolkit/lib/enterprise_service_bus/enums/enums";
+import { MessagingService } from "mservices_toolkit/lib/enterprise_service_bus/service/MessagingService";
 import { FwUrlBuilder } from "./services/fwUrlBuilder";
-import { MessagingService, MessaginRequestSubjects } from "mservices_toolkit";
 
 
 export default class Orchestrator
