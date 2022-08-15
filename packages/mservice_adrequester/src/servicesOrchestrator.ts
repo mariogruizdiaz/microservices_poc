@@ -1,6 +1,6 @@
 import { MessaginRequestSubjects } from "enterprise_service_bus";
 import { MessagingService } from "enterprise_service_bus";
-import { BeaconBuilder } from "./services/beaconBuilder";
+import { AdRequester } from "./services/adRequester";
 
 export default class Orchestrator
 {
@@ -16,9 +16,9 @@ export default class Orchestrator
 
     public static async init() : Promise<void> {
 
-        await MessagingService.init(process.env.NATS_SERVER_URL as string, BeaconBuilder.serviceName);
+        await MessagingService.init(process.env.NATS_SERVER_URL as string, AdRequester.serviceName);
 
-        await MessagingService.subscribe(BeaconBuilder.serviceName, MessaginRequestSubjects.COMPOSE_BEACON, BeaconBuilder.serviceImplementation);
-        console.log(`${BeaconBuilder.serviceName} Listener ready!`);
+        await MessagingService.subscribe(AdRequester.serviceName, MessaginRequestSubjects.GET_ADS, AdRequester.serviceImplementation);
+        console.log(`${AdRequester.serviceName} Listener ready!`);
     }
 }

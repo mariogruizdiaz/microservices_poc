@@ -1,6 +1,7 @@
 const enum MessaginRequestSubjects {
     COMPOSE_FW_URL = "COMPOSE_FW_URL",
-    COMPOSE_BEACON = "COMPOSE_BEACON"
+    COMPOSE_BEACON = "COMPOSE_BEACON",
+    GET_ADS = "GET_ADS"
 
 }
 

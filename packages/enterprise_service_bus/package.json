@@ -1,16 +1,18 @@
 {
-  "name": "mservices_toolkit",
+  "name": "enterprise_service_bus",
   "version": "0.0.0",
   "description": "> TODO: description",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
   "author": "Mario Ruiz Diaz <mariogrd@gmail.com>",
   "homepage": "",
   "license": "ISC",
   "directories": {
-    "lib": "lib",
+    "lib": "src",
     "test": "__tests__"
   },
   "files": [
-    "lib"
+    "src"
   ],
   "scripts": {
     "test": "echo \"Error: run tests from root\" && exit 1",

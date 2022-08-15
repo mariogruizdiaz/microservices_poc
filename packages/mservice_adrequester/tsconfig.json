@@ -103,7 +103,7 @@
   },
   "include":[
       "**/*"
-, "../service_beacon_builder"  ],
+  ],
   "exclude": [
       "node_modules/**/*",
       "build/**/*"

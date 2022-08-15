@@ -1,10 +1,9 @@
 import express from "express";
 import 'dotenv/config';
-import { getAds } from "./fakes/AdRequesterService";
-import { FwURlRequest } from "mservices_toolkit/lib/enterprise_service_bus/model/fw/FwURlRequest";
-import { FwUrlResponse } from "mservices_toolkit/lib/enterprise_service_bus/model/fw/FwUrlResponse";
-import { MessagingService } from "mservices_toolkit/lib/enterprise_service_bus/service/MessagingService";
-import { BeaconRequest } from "mservices_toolkit/lib/enterprise_service_bus/model/beacon/BeaconRequest";
+import { AdRequesterRequest, AdRequesterResponse, FwURlRequest } from "enterprise_service_bus";
+import { FwUrlResponse } from "enterprise_service_bus";
+import { MessagingService } from "enterprise_service_bus";
+import { BeaconRequest } from "enterprise_service_bus";
 
 
 
@@ -19,11 +18,11 @@ MessagingService.init(process.env.NATS_SERVER_URL as string, SERVICE_NAME)
             const fwUrlResponse = await MessagingService.request(SERVICE_NAME, new FwURlRequest({ params: [1, 2, 3] })) as FwUrlResponse;
 
             // Getting Ads
-            const ads = await getAds(fwUrlResponse.fwURl);
-
+             const adRequesterResponse = await MessagingService.request(SERVICE_NAME, new AdRequesterRequest( fwUrlResponse.fwURl)) as AdRequesterResponse;
+            
 
             // Getting beacons for each ad in the list
-            const getBeaconPromises = ads.map(ad => MessagingService.request(SERVICE_NAME, new BeaconRequest(ad)));
+            const getBeaconPromises = adRequesterResponse.ads.map(ad => MessagingService.request(SERVICE_NAME, new BeaconRequest(ad)));
 
             Promise.all(getBeaconPromises).then((results) => {
                 res.send(results.map(ad => ({ extendedAd: ad.payload, statusCode: ad.statusCode})));
@@ -34,7 +33,7 @@ MessagingService.init(process.env.NATS_SERVER_URL as string, SERVICE_NAME)
 
         const port = 3000;
         app.listen(port, () => {
-            console.log(`Pause Ad µService is running like a champion! Listening in the port ${port}`);
+            console.log(`${SERVICE_NAME} µService is running like a champion! Listening in the port ${port}`);
         });
 
     });

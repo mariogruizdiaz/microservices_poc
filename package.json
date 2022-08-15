@@ -9,7 +9,8 @@
     "packages/*"
   ],
   "scripts": {
-    "start": "lerna run --parallel start"
+    "start": "lerna run --parallel start",
+    "build": "lerna run --parallel build"
   },
   "devDependencies": {
     "lerna": "^5.1.6",
