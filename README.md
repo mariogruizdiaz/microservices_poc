@@ -39,3 +39,9 @@ npm run start
 ```
 
 If everything worked you will be able to send http get request to http://localhost:3000/image
+
+
+### Documentation
+
+https://lucid.app/lucidchart/c4c9770c-6b15-4057-ac4f-7ac91c2d2f3f/edit?view_items=whtRm.pRmuH4&invitationId=inv_4903b66c-f837-40e0-ae8b-d50c3ab16d85#
+

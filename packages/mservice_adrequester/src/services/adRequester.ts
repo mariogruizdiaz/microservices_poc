@@ -29,7 +29,7 @@ export class AdRequester {
 
         }
         else {
-            return Promise.reject(`Error sending request Message. Use "request" instead of "subscribe" for expecting a response of it. Message: ${JSON.stringify(message)}`);
+            return Promise.reject(`Error sending request Message. Use "request" instead of "publish" for expecting a response of it. Message: ${JSON.stringify(message)}`);
         }
 
     }
