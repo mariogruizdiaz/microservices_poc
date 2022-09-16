@@ -1,5 +1,5 @@
 import { MessaginRequestSubjects } from "../../enums/enums";
-import { BaseRequest } from "../BaseRequest";
+import { BaseRequest } from  "enterprise_service_bus";
 
 export class BeaconRequest extends BaseRequest {
 

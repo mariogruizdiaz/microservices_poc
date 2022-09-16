@@ -1,10 +1,8 @@
 import { MessaginPublishSubjects, MessaginRequestSubjects } from "../enums/enums";
 import IMessageBus from "../interfaces/IMessageBus";
-import { BeaconRequest } from "../model/beacon/BeaconRequest";
-import { BeaconResponse } from "../model/beacon/BeaconResponse";
-import { FwURlRequest } from "../model/fw/FwURlRequest";
-import { FwUrlResponse } from "../model/fw/FwUrlResponse";
 import { Client, connect } from 'ts-nats';
+import { BaseRequest } from "../model/BaseRequest";
+import { BaseResponse } from "../model/BaseResponse";
 
 export default class NatsMessagingBus implements IMessageBus {
 
@@ -47,7 +45,7 @@ export default class NatsMessagingBus implements IMessageBus {
     }
 
     
-    async request(request: BeaconRequest | FwURlRequest): Promise<BeaconResponse | FwUrlResponse> {
+    async request(request: BaseRequest): Promise<BaseResponse> {
 
 
         const responseMsg = await this._natsClient.request(request.subject, this._timeout, JSON.stringify(request.payload));
