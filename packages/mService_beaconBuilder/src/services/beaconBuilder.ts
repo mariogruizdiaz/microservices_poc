@@ -1,5 +1,5 @@
 import { MessagingService } from "enterprise_service_bus";
-import { BeaconResponse } from "data_access_object";
+import { BeaconResponse } from "../../../data_model/build";
 
 
 export class BeaconBuilder {
