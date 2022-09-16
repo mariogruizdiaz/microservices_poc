@@ -1,5 +1,5 @@
+import { BaseRequest } from "enterprise_service_bus";
 import { MessaginRequestSubjects } from "../../enums/enums";
-import { BaseRequest } from "../BaseRequest";
 
 export class AdRequesterRequest extends BaseRequest {
 

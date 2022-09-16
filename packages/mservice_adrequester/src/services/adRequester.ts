@@ -1,4 +1,6 @@
-import { AdRequesterRequest, MessagingService, AdRequesterResponse } from "enterprise_service_bus";
+import { MessagingService } from "enterprise_service_bus";
+import { AdRequesterRequest } from "data_access_object";
+import { AdRequesterResponse } from "data_access_object";
 
 
 export class AdRequester {

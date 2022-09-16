@@ -1,4 +1,4 @@
-import { BaseResponse } from "../BaseResponse";
+import { BaseResponse } from "enterprise_service_bus";
 
 export class FwUrlResponse extends BaseResponse {
 

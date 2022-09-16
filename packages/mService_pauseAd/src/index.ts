@@ -1,9 +1,9 @@
 import express from "express";
 import 'dotenv/config';
-import { AdRequesterRequest, AdRequesterResponse, FwURlRequest } from "enterprise_service_bus";
-import { FwUrlResponse } from "enterprise_service_bus";
+import { AdRequesterRequest, AdRequesterResponse, FwURlRequest } from "data_access_object";
+import { FwUrlResponse } from "data_access_object";
 import { MessagingService } from "enterprise_service_bus";
-import { BeaconRequest } from "enterprise_service_bus";
+import { BeaconRequest } from "data_access_object";
 
 
 
