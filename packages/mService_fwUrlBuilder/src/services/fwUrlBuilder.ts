@@ -1,5 +1,5 @@
-import { FwURlRequest } from "data_access_object";
-import { FwUrlResponse } from "data_access_object";
+import { FwURlRequest } from "../../../data_model/build";
+import { FwUrlResponse } from "../../../data_model/build";
 import { MessagingService } from "enterprise_service_bus";
 
 export class FwUrlBuilder {
