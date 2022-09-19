@@ -1,4 +1,4 @@
 export interface IRequest {
-   topic: string;
-   payload: unknown;
+    topic: string;
+    payload: unknown;
 }

@@ -1,28 +1,28 @@
 {
-  "name": "service_fwurlbuilder",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npx tsc",
-    "start": "npm run build && node build/index.js",
-    "start:dev": "nodemon",
-    "lint": "eslint . --fix"
-  },
-  "author": "Mario Ruiz Diaz",
-  "license": "ISC",
-  "devDependencies": {
-    "@tsconfig/node16": "^1.0.3",
-    "@types/node": "^18.0.0",
-    "@typescript-eslint/eslint-plugin": "^5.28.0",
-    "@typescript-eslint/parser": "^5.28.0",
-    "eslint": "^8.17.0",
-    "nodemon": "^2.0.16",
-    "ts-node": "^10.8.1",
-    "typescript": "^4.7.4"
-  },
-  "dependencies": {
-    "dotenv": "^16.0.1"
-  }
+    "name": "service_fwurlbuilder",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "build": "npx tsc",
+        "start": "npm run build && node build/index.js",
+        "start:dev": "nodemon",
+        "lint": "eslint . --fix"
+    },
+    "author": "Mario Ruiz Diaz",
+    "license": "ISC",
+    "devDependencies": {
+        "@tsconfig/node16": "^1.0.3",
+        "@types/node": "^18.0.0",
+        "@typescript-eslint/eslint-plugin": "^5.28.0",
+        "@typescript-eslint/parser": "^5.28.0",
+        "eslint": "^8.17.0",
+        "nodemon": "^2.0.16",
+        "ts-node": "^10.8.1",
+        "typescript": "^4.7.4"
+    },
+    "dependencies": {
+        "dotenv": "^16.0.1"
+    }
 }

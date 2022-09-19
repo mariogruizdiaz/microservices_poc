@@ -1,33 +1,33 @@
 {
-  "name": "enterprise_service_bus",
-  "version": "0.0.0",
-  "description": "> TODO: description",
-  "main": "build/index.js",
-  "types": "build/index.d.ts",
-  "author": "Mario Ruiz Diaz <mariogrd@gmail.com>",
-  "homepage": "",
-  "license": "ISC",
-  "directories": {
-    "lib": "src",
-    "test": "__tests__"
-  },
-  "files": [
-    "src"
-  ],
-  "scripts": {
-    "test": "echo \"Error: run tests from root\" && exit 1",
-    "build": "npx tsc --declaration"
-  },
-  "devDependencies": {
-    "@tsconfig/node16": "^1.0.3",
-    "@types/node": "^18.0.0",
-    "@typescript-eslint/eslint-plugin": "^5.28.0",
-    "@typescript-eslint/parser": "^5.28.0",
-    "eslint": "^8.17.0",
-    "ts-node": "^10.8.1",
-    "typescript": "^4.7.4"
-  },
-  "dependencies": {
-    "ts-nats": "^1.2.15"
-  }
+    "name": "enterprise_service_bus",
+    "version": "0.0.0",
+    "description": "> TODO: description",
+    "main": "build/index.js",
+    "types": "build/index.d.ts",
+    "author": "Mario Ruiz Diaz <mariogrd@gmail.com>",
+    "homepage": "",
+    "license": "ISC",
+    "directories": {
+        "lib": "src",
+        "test": "__tests__"
+    },
+    "files": [
+        "src"
+    ],
+    "scripts": {
+        "test": "echo \"Error: run tests from root\" && exit 1",
+        "build": "npx tsc --declaration"
+    },
+    "devDependencies": {
+        "@tsconfig/node16": "^1.0.3",
+        "@types/node": "^18.0.0",
+        "@typescript-eslint/eslint-plugin": "^5.28.0",
+        "@typescript-eslint/parser": "^5.28.0",
+        "eslint": "^8.17.0",
+        "ts-node": "^10.8.1",
+        "typescript": "^4.7.4"
+    },
+    "dependencies": {
+        "ts-nats": "^1.2.15"
+    }
 }

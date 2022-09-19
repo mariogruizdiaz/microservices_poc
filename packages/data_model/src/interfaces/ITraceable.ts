@@ -1,7 +1,4 @@
-
-
 export default interface ITraceable {
-
-    traceId : string;
+    traceId: string;
     parentSpanId: string;
 }

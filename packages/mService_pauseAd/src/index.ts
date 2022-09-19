@@ -1,42 +1,58 @@
-import express from "express";
+import express from 'express';
 import 'dotenv/config';
-import { AdRequesterRequest, AdRequesterResponse, FwURlRequest } from "../../data_model/build";
-import { FwUrlResponse } from "../../data_model/build";
-import { MessagingService } from "enterprise_service_bus";
-import { BeaconRequest } from "../../data_model/build";
+import {
+    AdRequesterRequest,
+    AdRequesterResponse,
+    FwURlRequest
+} from '../../data_model/build';
+import { FwUrlResponse } from '../../data_model/build';
+import { MessagingService } from 'enterprise_service_bus';
+import { BeaconRequest } from '../../data_model/build';
 
-
-
-const SERVICE_NAME = "Pause Ad";
-MessagingService.init(process.env.NATS_SERVER_URL as string, SERVICE_NAME)
-    .then(() => {
+const SERVICE_NAME = 'Pause Ad';
+MessagingService.init(process.env.NATS_SERVER_URL as string, SERVICE_NAME).then(
+    () => {
         const app = express();
 
-        app.get("/image", async function (req, res) {
-
+        app.get('/image', async function (req, res) {
             // Getting the Fw URL
-            const fwUrlResponse = await MessagingService.request(SERVICE_NAME, new FwURlRequest({ params: [1, 2, 3] })) as FwUrlResponse;
+            const fwUrlResponse = (await MessagingService.request(
+                SERVICE_NAME,
+                new FwURlRequest({ params: [1, 2, 3] })
+            )) as FwUrlResponse;
 
             // Getting Ads
-            const adRequesterResponse = await MessagingService.request(SERVICE_NAME, new AdRequesterRequest( {urlRequest: fwUrlResponse.payload.fwURl })) as AdRequesterResponse;
-            
+            const adRequesterResponse = (await MessagingService.request(
+                SERVICE_NAME,
+                new AdRequesterRequest({
+                    urlRequest: fwUrlResponse.payload.fwURl
+                })
+            )) as AdRequesterResponse;
 
             // Getting beacons for each ad in the list
-            const getBeaconPromises = adRequesterResponse.payload.ads.map(ad => MessagingService.request(SERVICE_NAME, new BeaconRequest({ ad })));
+            const getBeaconPromises = adRequesterResponse.payload.ads.map(
+                (ad) =>
+                    MessagingService.request(
+                        SERVICE_NAME,
+                        new BeaconRequest({ ad })
+                    )
+            );
 
             Promise.all(getBeaconPromises).then((results) => {
-                res.send(results.map(ad => ({ extendedAd: ad.payload, statusCode: ad.statusCode})));
+                res.send(
+                    results.map((ad) => ({
+                        extendedAd: ad.payload,
+                        statusCode: ad.statusCode
+                    }))
+                );
             });
-
         });
-
 
         const port = 3000;
         app.listen(port, () => {
-            console.log(`${SERVICE_NAME} µService is running like a champion! Listening in the port ${port}`);
+            console.log(
+                `${SERVICE_NAME} µService is running like a champion! Listening in the port ${port}`
+            );
         });
-
-    });
-
-
-
+    }
+);
