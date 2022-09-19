@@ -26,7 +26,7 @@ export class AdRequester {
             }
 
 
-            MessagingService.response(AdRequester.serviceName, message.reply, new AdRequesterResponse(200, ads));
+            MessagingService.response(AdRequester.serviceName, message.reply, new AdRequesterResponse(200, "Everything OK", {ads}));
             return Promise.resolve();
 
         }
