@@ -1,8 +1,8 @@
 import { MessaginPublishSubjects, MessaginRequestSubjects } from "../enums/enums";
 import IMessageBus from "../interfaces/IMessageBus";
 import { Client, connect } from 'ts-nats';
-import { BaseRequest } from "../model/BaseRequest";
-import { BaseResponse } from "../model/BaseResponse";
+import { IRequest } from "../interfaces/IRequest";
+import { IResponse } from "../interfaces/IResponse";
 
 export default class NatsMessagingBus implements IMessageBus {
 
@@ -38,22 +38,20 @@ export default class NatsMessagingBus implements IMessageBus {
 
     }
 
-    async publish(subject: MessaginPublishSubjects | string, payload: unknown): Promise<void> {
-
-        this._natsClient.publish(subject, JSON.stringify(payload));
-
+    async publish(topic: string, payload: unknown): Promise<void> {
+        this._natsClient.publish(topic, JSON.stringify(payload));
     }
 
     
-    async request(request: BaseRequest): Promise<BaseResponse> {
+    async request(request: IRequest): Promise<IResponse> {
 
 
-        const responseMsg = await this._natsClient.request(request.subject, this._timeout, JSON.stringify(request.payload));
+        const responseMsg = await this._natsClient.request(request.topic, this._timeout, JSON.stringify(request.payload));
         return Promise.resolve(JSON.parse(responseMsg.data));
 
     }
 
-    async subscribe(serviceName: string, subject: MessaginPublishSubjects | MessaginRequestSubjects, callback: (err: unknown, msg: unknown) => void): Promise<void> {
+    async subscribe(serviceName: string, subject: string, callback: (err: unknown, msg: unknown) => void): Promise<void> {
 
         await this._natsClient.subscribe(subject, callback, { queue: serviceName.replace(new RegExp(' ', 'g'), '') });
 

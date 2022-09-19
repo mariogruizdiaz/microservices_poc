@@ -1,9 +1,5 @@
-import { BaseResponse } from "enterprise_service_bus";
+import { IResponse } from "enterprise_service_bus";
 
-export class BeaconResponse extends BaseResponse {
-
-   constructor(public statusCode: number, public extenderAd: {ad: string, beacons: string[]}, public error?: Error) {
-    super(statusCode, extenderAd, error);
-   }
-
+export class BeaconResponse implements IResponse {
+    constructor(public statusCode: number, public statusDescription: string, public payload: {ad: string, beacons: string[]}){}
 }
