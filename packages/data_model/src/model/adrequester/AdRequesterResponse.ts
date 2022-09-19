@@ -1,9 +1,5 @@
-import { BaseResponse } from "enterprise_service_bus";
+import { IResponse } from "enterprise_service_bus";
 
-export class AdRequesterResponse extends BaseResponse {
-
-   constructor(public statusCode: number, public ads: string[], public error?: Error) {
-    super(statusCode, ads, error);
-   }
-
+export class AdRequesterResponse implements IResponse {
+    constructor (public statusCode: number, public statusDescription: string, public payload: { ads: string[]} ){}
 }

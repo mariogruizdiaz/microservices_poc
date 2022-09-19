@@ -1,9 +1,5 @@
-import { BaseResponse } from "enterprise_service_bus";
+import { IResponse } from "enterprise_service_bus";
 
-export class FwUrlResponse extends BaseResponse {
-
-   constructor(public statusCode: number, public fwURl: string, public error?: Error) {
-    super(statusCode, fwURl, error);
-   }
-
+export class FwUrlResponse implements IResponse {
+   constructor(public statusCode: number, public statusDescription: string, public payload: {fwURl: string}){}
 }

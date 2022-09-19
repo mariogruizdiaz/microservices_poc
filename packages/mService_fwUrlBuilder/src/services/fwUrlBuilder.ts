@@ -15,7 +15,7 @@ export class FwUrlBuilder {
 
         if (message.reply) {
             
-            await MessagingService.response(FwUrlBuilder.serviceName, message.reply, new FwUrlResponse(200, `https://url.build.by.${FwUrlBuilder.INSTANCE_ID}.instance`))
+            await MessagingService.response(FwUrlBuilder.serviceName, message.reply, new FwUrlResponse(200, "Everything OK", { fwURl: `https://url.build.by.${FwUrlBuilder.INSTANCE_ID}.instance`}))
             return Promise.resolve();
 
         }

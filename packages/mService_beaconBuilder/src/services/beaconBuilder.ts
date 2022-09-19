@@ -18,6 +18,7 @@ export class BeaconBuilder {
             await MessagingService.response(BeaconBuilder.serviceName, message.reply,
                 new BeaconResponse(
                     200,
+                    "Evrything OK",
                     {
                         ad: message.data,
                         beacons: await getBeacons(message.data)

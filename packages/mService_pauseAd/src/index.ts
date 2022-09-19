@@ -18,11 +18,11 @@ MessagingService.init(process.env.NATS_SERVER_URL as string, SERVICE_NAME)
             const fwUrlResponse = await MessagingService.request(SERVICE_NAME, new FwURlRequest({ params: [1, 2, 3] })) as FwUrlResponse;
 
             // Getting Ads
-             const adRequesterResponse = await MessagingService.request(SERVICE_NAME, new AdRequesterRequest( fwUrlResponse.fwURl)) as AdRequesterResponse;
+            const adRequesterResponse = await MessagingService.request(SERVICE_NAME, new AdRequesterRequest( {urlRequest: fwUrlResponse.payload.fwURl })) as AdRequesterResponse;
             
 
             // Getting beacons for each ad in the list
-            const getBeaconPromises = adRequesterResponse.ads.map(ad => MessagingService.request(SERVICE_NAME, new BeaconRequest(ad)));
+            const getBeaconPromises = adRequesterResponse.payload.ads.map(ad => MessagingService.request(SERVICE_NAME, new BeaconRequest({ ad })));
 
             Promise.all(getBeaconPromises).then((results) => {
                 res.send(results.map(ad => ({ extendedAd: ad.payload, statusCode: ad.statusCode})));

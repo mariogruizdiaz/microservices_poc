@@ -1,10 +1,13 @@
 import { MessaginRequestSubjects } from "../../enums/enums";
-import { BaseRequest } from  "enterprise_service_bus";
+import { IRequest } from  "enterprise_service_bus";
 
-export class BeaconRequest extends BaseRequest {
 
-   constructor(public payload: string) {
-    super(MessaginRequestSubjects.COMPOSE_BEACON, payload);
-   }
+export class BeaconRequest implements IRequest {
+    public topic: string;
+
+    constructor(public payload: { ad: string }){
+        this.topic = MessaginRequestSubjects.COMPOSE_BEACON;
+    }
+    
 
 }
