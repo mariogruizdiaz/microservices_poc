@@ -6,11 +6,9 @@ describe('', () => {
     const SUBJECT = 'SUBJECT';
     beforeAll(async () => {
         await MessagingService.init(NATS, CHANNEL);
-        await MessagingService.subscribe(CHANNEL, SUBJECT, (msg, reply) => {
-            if (!reply) throw new Error('reply not supplied by callback');
-            return msg == 'start'
-                ? MessagingService.response(reply, 'end')
-                : undefined;
+        await MessagingService.setResponseFor(CHANNEL, SUBJECT, (msg) => {
+            if (msg == 'start') return Promise.resolve('end');
+            throw new Error('Not proper request');
         });
     });
     afterAll(async () => MessagingService.close());

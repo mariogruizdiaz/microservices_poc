@@ -4,6 +4,8 @@ import IMessageBus, {
     MessageCallback
 } from '../interfaces/IMessageBus';
 
+type AsyncJSONValueMorph = (req: JSONValue) => Promise<JSONValue>;
+
 class MessagingService {
     //#region Fields
 
@@ -61,6 +63,27 @@ class MessagingService {
         );
     }
 
+    public static async setResponseFor(
+        subscriptoService: string,
+        subject: string,
+        callback: AsyncJSONValueMorph
+    ): Promise<void> {
+        return this.subscribe(subscriptoService, subject, (msg, reply) => {
+            if (!reply)
+                throw new Error(
+                    `${subscriptoService} reply not supplied by ${subject}`
+                );
+            callback(msg)
+                .then((res) => MessagingService.response(reply, res))
+                .catch((e) =>
+                    console.error(
+                        `Error during ${subscriptoService} ${subject} response`,
+                        e
+                    )
+                );
+        });
+    }
+
     public static async subscribe(
         subscriptoService: string,
         subject: string,
@@ -115,4 +138,4 @@ class MessagingService {
     }
 }
 
-export { MessagingService };
+export { JSONValue, MessagingService, AsyncJSONValueMorph, MessageCallback };
