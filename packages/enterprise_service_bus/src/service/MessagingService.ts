@@ -138,4 +138,28 @@ class MessagingService {
     }
 }
 
-export { JSONValue, MessagingService, AsyncJSONValueMorph, MessageCallback };
+async function initializeRequestReplyPattern(
+    url: string,
+    name: string,
+    subject: string,
+    impl: AsyncJSONValueMorph
+): Promise<void> {
+    try {
+        await MessagingService.init(url, name);
+
+        await MessagingService.setResponseFor(name, subject, impl);
+        console.log(`${name} Listener ready!`);
+        console.log(`The ${name} was initialized successfully!`);
+    } catch (e) {
+        console.error(e);
+        console.log(`It was not possible to intialize the ${name}`);
+    }
+}
+
+export {
+    JSONValue,
+    MessagingService,
+    AsyncJSONValueMorph,
+    MessageCallback,
+    initializeRequestReplyPattern
+};
