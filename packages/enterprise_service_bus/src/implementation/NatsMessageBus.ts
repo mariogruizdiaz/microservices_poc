@@ -1,11 +1,27 @@
+import IMessageBus, {
+    JSONValue,
+    MessageCallback
+} from '../interfaces/IMessageBus';
 import {
-    MessaginPublishSubjects,
-    MessaginRequestSubjects
-} from '../enums/enums';
-import IMessageBus from '../interfaces/IMessageBus';
-import { Client, connect } from 'ts-nats';
-import { IRequest } from '../interfaces/IRequest';
-import { IResponse } from '../interfaces/IResponse';
+    Client,
+    connect,
+    MsgCallback as NatsMsgCallback,
+    Payload
+} from 'ts-nats';
+
+function withCallbackModified(callback: MessageCallback): NatsMsgCallback {
+    return (err, msg) => {
+        if (err) {
+            console.error(err);
+            return;
+        }
+        try {
+            callback(msg.data, msg.reply);
+        } catch (err2) {
+            console.error(err2);
+        }
+    };
+}
 
 export default class NatsMessagingBus implements IMessageBus {
     //#region Fields
@@ -22,7 +38,10 @@ export default class NatsMessagingBus implements IMessageBus {
 
     async init(serverUrl: string, clientServiceName: string): Promise<void> {
         const start = new Date();
-        this._natsClient = await connect({ url: `${serverUrl}` });
+        this._natsClient = await connect({
+            url: `${serverUrl}`,
+            payload: Payload.JSON
+        });
         this._natsClient.on('connect', () => {
             console.log(
                 `${clientServiceName} connected to Nats server in: ${
@@ -42,30 +61,38 @@ export default class NatsMessagingBus implements IMessageBus {
         return Promise.resolve();
     }
 
-    async publish(topic: string, payload: unknown): Promise<void> {
-        this._natsClient.publish(topic, JSON.stringify(payload));
+    async publish(subject: string, payload: JSONValue): Promise<void> {
+        this._natsClient.publish(subject, JSON.stringify(payload));
     }
 
-    async request(request: IRequest): Promise<IResponse> {
+    async request(subject: string, payload: JSONValue): Promise<JSONValue> {
         const responseMsg = await this._natsClient.request(
-            request.topic,
+            subject,
             this._timeout,
-            JSON.stringify(request.payload)
+            payload
         );
-        return Promise.resolve(JSON.parse(responseMsg.data));
+        return responseMsg.data;
     }
 
     async subscribe(
         serviceName: string,
         subject: string,
-        callback: (err: unknown, msg: unknown) => void
+        callback: MessageCallback
     ): Promise<void> {
-        await this._natsClient.subscribe(subject, callback, {
-            queue: serviceName.replace(new RegExp(' ', 'g'), '')
-        });
+        return this._natsClient
+            .subscribe(subject, withCallbackModified(callback), {
+                queue: serviceName.replace(new RegExp(' ', 'g'), '')
+            })
+            .then();
     }
-    unsubscribe(subscriptionId: number): Promise<unknown> {
-        return Promise.resolve(subscriptionId);
+
+    unsubscribe(subscriptionId: number): Promise<void> {
+        return Promise.resolve();
+    }
+
+    close(): Promise<void> {
+        this._natsClient.close();
+        return Promise.resolve();
     }
 }
 

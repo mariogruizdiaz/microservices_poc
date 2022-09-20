@@ -1,33 +1,35 @@
-import {
-    MessaginPublishSubjects,
-    MessaginRequestSubjects
-} from '../enums/enums';
-import IMessageBus from '../interfaces/IMessageBus';
-import { IRequest } from '../interfaces/IRequest';
-import { IResponse } from '../interfaces/IResponse';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import IMessageBus, {
+    JSONValue,
+    MessageCallback
+} from '../interfaces/IMessageBus';
 
 export default class KafkaMessagingBus implements IMessageBus {
     name: string;
     constructor() {
         this.name = 'Kafka Messaging serevice';
     }
-    init(serverUrl: string, clientServiceName: string): void {
+    init(serverUrl: string, clientServiceName: string): Promise<void> {
         throw new Error('Method not implemented.');
     }
-    publish(topic: string, payload: unknown): Promise<void> {
+    publish(subject: string, payload: JSONValue): Promise<void> {
         throw new Error('Method not implemented.');
     }
     subscribe(
         serviceName: string,
         subject: string,
-        callback: (err: unknown, msg: unknown) => void
+        callback: MessageCallback
     ): Promise<void> {
         throw new Error('Method not implemented.');
     }
-    unsubscribe(subscriptionId: number): Promise<unknown> {
+    unsubscribe(subscriptionId: number): Promise<void> {
         throw new Error('Method not implemented.');
     }
-    request(request: IRequest): Promise<IResponse> {
+    request(subject: string, payload: JSONValue): Promise<JSONValue> {
+        throw new Error('Method not implemented.');
+    }
+
+    close(): Promise<void> {
         throw new Error('Method not implemented.');
     }
 }

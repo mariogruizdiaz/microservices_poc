@@ -1,17 +1,15 @@
-import {
-    MessaginPublishSubjects,
-    MessaginRequestSubjects
-} from '../enums/enums';
 import NatsMessagingBus from '../implementation/NatsMessageBus';
-import IMessageBus from '../interfaces/IMessageBus';
-import { IRequest } from '../interfaces/IRequest';
-import { IResponse } from '../interfaces/IResponse';
+import IMessageBus, {
+    JSONValue,
+    MessageCallback
+} from '../interfaces/IMessageBus';
 
-export class MessagingService {
+class MessagingService {
     //#region Fields
 
     private static _instance: MessagingService = new MessagingService();
     private _messagingClient!: IMessageBus;
+    private _name!: string;
 
     //#endregion Fields
 
@@ -32,6 +30,7 @@ export class MessagingService {
         clientServiceName: string
     ): Promise<void> {
         this.getInstance()._messagingClient = new NatsMessagingBus();
+        this.getInstance()._name = clientServiceName;
         await this.getInstance()._messagingClient.init(
             serverUrl,
             clientServiceName
@@ -39,38 +38,38 @@ export class MessagingService {
     }
 
     public static async publish(
-        publisher: string,
-        topic: string,
-        payload: unknown
+        subject: string,
+        payload: JSONValue
     ): Promise<void> {
-        await this.getInstance()._messagingClient.publish(topic, payload);
+        await this.getInstance()._messagingClient.publish(subject, payload);
         console.log(
-            `${publisher} has published: ${topic} ****************************************`
+            `${
+                this.getInstance()._name
+            } has published: ${subject} ****************************************`
         );
     }
 
     public static async response(
-        replier: string,
-        topic: string,
-        payload: unknown
+        subject: string,
+        payload: JSONValue
     ): Promise<void> {
-        await this.getInstance()._messagingClient.publish(topic, payload);
+        await this.getInstance()._messagingClient.publish(subject, payload);
         console.log(
-            `${replier} has replied: to ${topic} ****************************************`
+            `${
+                this.getInstance()._name
+            } has replied: to ${subject} ****************************************`
         );
     }
 
     public static async subscribe(
         subscriptoService: string,
-        subject: MessaginRequestSubjects | MessaginPublishSubjects,
-        callback: (err: unknown, msg: unknown) => void
+        subject: string,
+        callback: MessageCallback
     ): Promise<void> {
         await this.getInstance()._messagingClient.subscribe(
             subscriptoService,
             subject,
-            async (err, msg) => {
-                await callback(err, msg);
-            }
+            callback
         );
         console.log(
             `${subscriptoService} has been subcripted to ${subject} - OK! ****************************************`
@@ -78,27 +77,24 @@ export class MessagingService {
     }
 
     public static async request(
-        requester: string,
-        request: IRequest
-    ): Promise<IResponse> {
+        subject: string,
+        payload: JSONValue
+    ): Promise<JSONValue> {
+        const requester = this.getInstance()._name;
         console.log(
-            `Caller: ${requester} sent a request for the Topic: ${
-                request.topic
-            }. Payload: ${JSON.stringify(
-                request.payload
-            )} ****************************************`
+            `Caller: ${requester} sent a request for the Topic: ${subject}. Payload: ${payload}
+             ****************************************`
         );
-        const start = new Date();
+        const start = Date.now();
 
         const response = await this.getInstance()._messagingClient.request(
-            request
+            subject,
+            payload
         );
 
         console.log(
-            `Caller: ${requester} got the response for the Topic: ${
-                request.topic
-            } in ${
-                new Date().valueOf() - start.valueOf()
+            `Caller: ${requester} got the response for the Topic: ${subject} in ${
+                Date.now() - start
             }ms ****************************************`
         );
         return Promise.resolve(response);
@@ -113,4 +109,10 @@ export class MessagingService {
     }
 
     //#endregion Private
+
+    public static async close(): Promise<void> {
+        return this.getInstance()._messagingClient.close();
+    }
 }
+
+export { MessagingService };
