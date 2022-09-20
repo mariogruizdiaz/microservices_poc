@@ -62,7 +62,7 @@ export default class NatsMessagingBus implements IMessageBus {
     }
 
     async publish(subject: string, payload: JSONValue): Promise<void> {
-        this._natsClient.publish(subject, JSON.stringify(payload));
+        this._natsClient.publish(subject, payload);
     }
 
     async request(subject: string, payload: JSONValue): Promise<JSONValue> {

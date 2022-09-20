@@ -14,6 +14,6 @@ describe('', () => {
     afterAll(async () => MessagingService.close());
     test('basic message interactions', async () => {
         const res = await MessagingService.request(SUBJECT, 'start');
-        expect(res).toBe(JSON.stringify('end'));
+        expect(res).toBe('end');
     }, 10000);
 });
