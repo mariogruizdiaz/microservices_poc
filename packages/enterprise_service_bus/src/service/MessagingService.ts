@@ -1,65 +1,127 @@
-import { MessaginPublishSubjects, MessaginRequestSubjects } from '../enums/enums';
 import NatsMessagingBus from '../implementation/NatsMessageBus';
-import IMessageBus from '../interfaces/IMessageBus';
-import { IRequest } from '../interfaces/IRequest';
-import { IResponse } from '../interfaces/IResponse';
+import IMessageBus, {
+    JSONValue,
+    MessageCallback
+} from '../interfaces/IMessageBus';
 
+type AsyncJSONValueMorph = (req: JSONValue) => Promise<JSONValue>;
 
-export class MessagingService {
-
+class MessagingService {
     //#region Fields
 
     private static _instance: MessagingService = new MessagingService();
     private _messagingClient!: IMessageBus;
+    private _name!: string;
 
     //#endregion Fields
 
-    //#region Constructors and Public 
+    //#region Constructors and Public
 
     constructor() {
         if (MessagingService._instance) {
-            throw new Error("Error: Instantiation failed: Use NatsMessagingBus.getInstance() instead of new.");
+            throw new Error(
+                'Error: Instantiation failed: Use NatsMessagingBus.getInstance() instead of new.'
+            );
         }
 
         MessagingService._instance = this;
     }
 
-    public static async init(serverUrl: string, clientServiceName: string): Promise<void> {
+    public static async init(
+        serverUrl: string,
+        clientServiceName: string
+    ): Promise<void> {
         this.getInstance()._messagingClient = new NatsMessagingBus();
-        await this.getInstance()._messagingClient.init(serverUrl, clientServiceName);
+        this.getInstance()._name = clientServiceName;
+        await this.getInstance()._messagingClient.init(
+            serverUrl,
+            clientServiceName
+        );
     }
 
-
-    public static async publish(publisher: string, topic: string, payload: unknown): Promise<void> {
-        await this.getInstance()._messagingClient.publish(topic, payload);
-        console.log(`${publisher} has published: ${topic} ****************************************`);
-
+    public static async publish(
+        subject: string,
+        payload: JSONValue
+    ): Promise<void> {
+        await this.getInstance()._messagingClient.publish(subject, payload);
+        console.log(
+            `${
+                this.getInstance()._name
+            } has published: ${subject} ****************************************`
+        );
     }
 
-    public static async response(replier: string, topic: string, payload: unknown): Promise<void> {
-        await this.getInstance()._messagingClient.publish(topic, payload);
-        console.log(`${replier} has replied: to ${topic} ****************************************`);
-
+    public static async response(
+        subject: string,
+        payload: JSONValue
+    ): Promise<void> {
+        await this.getInstance()._messagingClient.publish(subject, payload);
+        console.log(
+            `${
+                this.getInstance()._name
+            } has replied: to ${subject} ****************************************`
+        );
     }
 
-    public static async subscribe(subscriptoService: string, subject: MessaginRequestSubjects | MessaginPublishSubjects, callback: (err: unknown, msg: unknown) => void): Promise<void> {
-        await this.getInstance()._messagingClient.subscribe(subscriptoService, subject, async (err, msg) => {
-            await callback(err, msg);
-
+    public static async setResponseFor(
+        subscriptoService: string,
+        subject: string,
+        callback: AsyncJSONValueMorph
+    ): Promise<void> {
+        return this.subscribe(subscriptoService, subject, (msg, reply) => {
+            if (!reply)
+                throw new Error(
+                    `${subscriptoService} reply not supplied by ${subject}`
+                );
+            callback(msg)
+                .then((res) => MessagingService.response(reply, res))
+                .catch((e) =>
+                    console.error(
+                        `Error during ${subscriptoService} ${subject} response`,
+                        e
+                    )
+                );
         });
-        console.log(`${subscriptoService} has been subcripted to ${subject} - OK! ****************************************`);
     }
 
-    public static async request(requester: string, request: IRequest): Promise<IResponse> {
-        console.log(`Caller: ${requester} sent a request for the Topic: ${request.topic}. Payload: ${JSON.stringify(request.payload)} ****************************************`);
-        const start = new Date();
+    public static async subscribe(
+        subscriptoService: string,
+        subject: string,
+        callback: MessageCallback
+    ): Promise<void> {
+        await this.getInstance()._messagingClient.subscribe(
+            subscriptoService,
+            subject,
+            callback
+        );
+        console.log(
+            `${subscriptoService} has been subcripted to ${subject} - OK! ****************************************`
+        );
+    }
 
-        const response = await this.getInstance()._messagingClient.request(request);
+    public static async request(
+        subject: string,
+        payload: JSONValue
+    ): Promise<JSONValue> {
+        const requester = this.getInstance()._name;
+        console.log(
+            `Caller: ${requester} sent a request for the Topic: ${subject}. Payload: ${payload}
+             ****************************************`
+        );
+        const start = Date.now();
 
-        console.log(`Caller: ${requester} got the response for the Topic: ${request.topic} in ${new Date().valueOf() - start.valueOf()}ms ****************************************`);
+        const response = await this.getInstance()._messagingClient.request(
+            subject,
+            payload
+        );
+
+        console.log(
+            `Caller: ${requester} got the response for the Topic: ${subject} in ${
+                Date.now() - start
+            }ms ****************************************`
+        );
         return Promise.resolve(response);
     }
-
 
     //#endregion Constructors and Public
 
@@ -69,8 +131,35 @@ export class MessagingService {
         return MessagingService._instance;
     }
 
-
-
     //#endregion Private
 
+    public static async close(): Promise<void> {
+        return this.getInstance()._messagingClient.close();
+    }
 }
+
+async function initializeRequestReplyPattern(
+    url: string,
+    name: string,
+    subject: string,
+    impl: AsyncJSONValueMorph
+): Promise<void> {
+    try {
+        await MessagingService.init(url, name);
+
+        await MessagingService.setResponseFor(name, subject, impl);
+        console.log(`${name} Listener ready!`);
+        console.log(`The ${name} was initialized successfully!`);
+    } catch (e) {
+        console.error(e);
+        console.log(`It was not possible to intialize the ${name}`);
+    }
+}
+
+export {
+    JSONValue,
+    MessagingService,
+    AsyncJSONValueMorph,
+    MessageCallback,
+    initializeRequestReplyPattern
+};

@@ -1,46 +1,25 @@
-import { MessagingService } from "enterprise_service_bus";
-import { BeaconResponse } from "../../../data_model/build";
+import { JSONValue } from 'enterprise_service_bus';
 
+const INSTANCE_ID = `Beacon Builder ${process.env.INSTANCE_NAME}_${Math.floor(
+    Math.random() * 100
+)}`;
 
-export class BeaconBuilder {
-    public static serviceName = "Beacon Builder";
-    public static INSTANCE_ID = `${process.env.INSTANCE_NAME}_${Math.floor(Math.random() * 100)}`;
+export type Response = string[];
 
-    public static async serviceImplementation(err: unknown, msg: unknown): Promise<void> {
-        if (err) return Promise.reject(err);
-        const message = msg as { data: string; reply: string; };
-        
+export type Request = string;
 
-        console.log(`The service ${BeaconBuilder.serviceName} receives a new Request - PAYLOAD: ${message.data} ****************************************`);
+async function getBeacons(req: JSONValue): Promise<Response> {
+    const url = req as Request;
 
-        if (message.reply) {
+    console.log(
+        `The service ${INSTANCE_ID} receives a new Request - PAYLOAD: ${url} ****************************************`
+    );
 
-            await MessagingService.response(BeaconBuilder.serviceName, message.reply,
-                new BeaconResponse(
-                    200,
-                    "Evrything OK",
-                    {
-                        ad: message.data,
-                        beacons: await getBeacons(message.data)
-                    }));
-            return Promise.resolve();
-
-        }
-        else {
-            return Promise.reject(`Error sending request Message. Use "request" instead of "subscribe" for expecting a response of it. Message: ${JSON.stringify(message)}`);
-        }
-
-    }
+    return [...Array(Math.floor(Math.random() * 5)).keys()].map(
+        (n) => `Beacon #${n} from ${INSTANCE_ID} for the ad ${url}`
+    );
 }
 
-async function getBeacons(url: string) : Promise<string[]> {
-    let beaconNumber = 0;
-    const beacons = [];
-    const total = Math.floor(Math.random() * 5);
+export const serviceImplementation = getBeacons;
 
-    for (let i = 0; i < total; i++) {
-        beacons.push(`Beacon #${++beaconNumber} from ${BeaconBuilder.INSTANCE_ID} for the ad ${url}`);
-    }
-
-    return Promise.resolve(beacons);
-}
+export { INSTANCE_ID as serviceName };

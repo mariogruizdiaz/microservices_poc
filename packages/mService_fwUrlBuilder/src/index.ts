@@ -1,20 +1,16 @@
 import 'dotenv/config';
-import Orchestrator from "./servicesOrchestrator";
+import { initializeRequestReplyPattern as init } from 'enterprise_service_bus';
+import { RequestSubject } from './enums/enums';
+import { serviceImplementation, serviceName } from './services/fwUrlBuilder';
 
-const SERVICE_NAME = "µ Service Fw URL Builder"
-async function init(): Promise<boolean> {
-    try{
-        await Orchestrator.init();
-        return Promise.resolve(true);
-    } catch (e) {
-        console.error(e);
-        return Promise.resolve(false);
-    }
-    
-    
-  }
-   
-init().then(response => {
-    if (response) console.log(`The ${SERVICE_NAME} was initialized successfully!`);
-    else console.log(`It was not possible to intialize the ${SERVICE_NAME}`);
-});
+Promise.resolve(
+    init(
+        process.env.NATS_SERVER_URL as string,
+        serviceName,
+        RequestSubject.ComposeFreewheelURL,
+        serviceImplementation
+    )
+);
+
+export default { name: serviceName, RequestSubject };
+export { Request, Response } from './services/fwUrlBuilder';

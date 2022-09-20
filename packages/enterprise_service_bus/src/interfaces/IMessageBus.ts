@@ -1,18 +1,30 @@
-import { IRequest } from './IRequest';
-import { IResponse } from './IResponse';
-
 export default interface IMessageBus {
+    name: string;
 
-    name : string
+    init(serverUrl: string, clientServiceName: string): Promise<void>;
 
-    init(serverUrl: string, clientServiceName: string):void;
-    
-    publish(topic: string, payload: unknown) : Promise<void>;
+    publish(subject: string, payload: JSONValue): Promise<void>;
 
-    subscribe(serviceName: string, subject: string, callback: (err: unknown, msg: unknown) => void) : Promise<void>;
+    subscribe(
+        serviceName: string,
+        subject: string,
+        callback: MessageCallback
+    ): Promise<void>;
 
-    unsubscribe(subscriptionId: number):Promise<unknown>;
+    unsubscribe(subscriptionId: number): Promise<void>;
 
-    request(request: IRequest ) : Promise<IResponse>;
+    request(subject: string, payload: JSONValue): Promise<JSONValue>;
 
+    close(): Promise<void>;
 }
+
+export type JSONValue =
+    | string
+    | number
+    | true
+    | false
+    | null
+    | JSONValue[]
+    | { [P in string]: JSONValue };
+
+export type MessageCallback = (msg: JSONValue, reply?: string) => void;
