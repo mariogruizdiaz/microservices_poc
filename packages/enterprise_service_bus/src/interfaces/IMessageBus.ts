@@ -18,6 +18,13 @@ export default interface IMessageBus {
     close(): Promise<void>;
 }
 
-export type JSONValue = string | number | true | false | null | JSON[] | JSON;
+export type JSONValue =
+    | string
+    | number
+    | true
+    | false
+    | null
+    | JSONValue[]
+    | { [P in string]: JSONValue };
 
 export type MessageCallback = (msg: JSONValue, reply?: string) => void;
