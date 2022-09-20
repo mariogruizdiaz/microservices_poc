@@ -1,11 +1,7 @@
 import 'dotenv/config';
 import { initializeRequestReplyPattern as init } from 'enterprise_service_bus';
 import { RequestSubject } from './enums/enums';
-import {
-    serviceImplementation,
-    serviceName,
-    Response
-} from './services/adRequester';
+import { serviceImplementation, serviceName } from './services/adRequester';
 
 Promise.resolve(
     init(
@@ -17,4 +13,4 @@ Promise.resolve(
 );
 
 export default { name: serviceName, RequestSubject };
-export { Response };
+export { Request, Response } from './services/adRequester';
