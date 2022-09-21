@@ -11,7 +11,6 @@ export class Metrics {
 
         counter++;
 
-        // await MessagingService.publishEvent(Metrics.serviceName, new ExecutionEvent({ serviceName: Metrics.serviceName }));
         const message = msg as { data: string };
 
         const payload = JSON.parse(message.data) as ExecutionEventPayload;
