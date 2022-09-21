@@ -1,5 +1,5 @@
 import { MessagingService } from "enterprise_service_bus";
-import { BeaconResponse } from "../../../data_model/build";
+import { BeaconResponse, ExecutionEvent } from "../../../data_model/build";
 
 
 export class BeaconBuilder {
@@ -8,6 +8,9 @@ export class BeaconBuilder {
 
     public static async serviceImplementation(err: unknown, msg: unknown): Promise<void> {
         if (err) return Promise.reject(err);
+
+        // PubSub Use Case
+        await MessagingService.publishEvent(BeaconBuilder.serviceName, new ExecutionEvent({ serviceName: BeaconBuilder.serviceName }));
         const message = msg as { data: string; reply: string; };
         
 

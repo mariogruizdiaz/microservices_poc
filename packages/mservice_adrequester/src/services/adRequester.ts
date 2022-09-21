@@ -1,5 +1,5 @@
 import { MessagingService } from "enterprise_service_bus";
-import { AdRequesterRequest } from "../../../data_model/build";
+import { AdRequesterRequest, ExecutionEvent } from "../../../data_model/build";
 import { AdRequesterResponse } from "../../../data_model/build";
 
 
@@ -9,9 +9,10 @@ export class AdRequester {
 
     public static async serviceImplementation(err: unknown, msg: unknown): Promise<void> {
         if (err) return Promise.reject(err);
+        await MessagingService.publishEvent(AdRequester.serviceName, new ExecutionEvent({ serviceName: AdRequester.serviceName }));
         const message = msg as { data: AdRequesterRequest; reply: string; };
 
-        console.log(`The service ${AdRequester.serviceName} receives a new Request - PAYLOAD: ${JSON.stringify(message)} ****************************************`);
+        // console.log(`The service ${AdRequester.serviceName} receives a new Request - PAYLOAD: ${JSON.stringify(message)} ****************************************`);
 
 
         if (message.reply) {

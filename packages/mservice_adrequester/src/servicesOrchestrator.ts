@@ -1,5 +1,6 @@
 import { MessaginRequestSubjects } from "enterprise_service_bus";
 import { MessagingService } from "enterprise_service_bus";
+import { ExecutionEvent } from "../../data_model/build";
 import { AdRequester } from "./services/adRequester";
 
 export default class Orchestrator
@@ -20,5 +21,8 @@ export default class Orchestrator
 
         await MessagingService.subscribe(AdRequester.serviceName, MessaginRequestSubjects.GET_ADS, AdRequester.serviceImplementation);
         console.log(`${AdRequester.serviceName} Listener ready!`);
+
+        // Publish/Subcribe Pattern
+        await MessagingService.publishEvent(AdRequester.serviceName, new ExecutionEvent({ serviceName: AdRequester.serviceName }));
     }
 }
