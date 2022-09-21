@@ -14,15 +14,18 @@ MessagingService.init(process.env.NATS_SERVER_URL as string, SERVICE_NAME)
 
         app.get("/image", async function (req, res) {
 
+            // PubSub Use Case
             await MessagingService.publishEvent(SERVICE_NAME, new ExecutionEvent({ serviceName: '/image' }));
 
+            // PubSub Use Case
             // Getting the Fw URL
             const fwUrlResponse = await MessagingService.request(SERVICE_NAME, new FwURlRequest({ params: [1, 2, 3] })) as FwUrlResponse;
 
+            // Request-Reply Use Case
             // Getting Ads
             const adRequesterResponse = await MessagingService.request(SERVICE_NAME, new AdRequesterRequest( {urlRequest: fwUrlResponse.payload.fwURl })) as AdRequesterResponse;
             
-
+            // Request-Reply Use Case
             // Getting beacons for each ad in the list
             const getBeaconPromises = adRequesterResponse.payload.ads.map(ad => MessagingService.request(SERVICE_NAME, new BeaconRequest({ ad })));
 

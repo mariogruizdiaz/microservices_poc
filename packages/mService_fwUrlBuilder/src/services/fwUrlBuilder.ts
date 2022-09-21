@@ -9,7 +9,10 @@ export class FwUrlBuilder {
     public static async serviceImplementation(err: unknown, msg: unknown) : Promise<void> 
     {
         if (err) return Promise.reject(err);
+
+        // PubSub Use Case
         await MessagingService.publishEvent(FwUrlBuilder.serviceName, new ExecutionEvent({ serviceName: FwUrlBuilder.serviceName }));
+        
         const message = msg as { data: FwURlRequest; reply: string; };
 
         console.log(`The service ${FwUrlBuilder.serviceName} receives a new Request - PAYLOAD: ${JSON.stringify( message.data )} ****************************************`);

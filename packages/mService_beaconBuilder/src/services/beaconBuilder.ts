@@ -8,6 +8,8 @@ export class BeaconBuilder {
 
     public static async serviceImplementation(err: unknown, msg: unknown): Promise<void> {
         if (err) return Promise.reject(err);
+
+        // PubSub Use Case
         await MessagingService.publishEvent(BeaconBuilder.serviceName, new ExecutionEvent({ serviceName: BeaconBuilder.serviceName }));
         const message = msg as { data: string; reply: string; };
         
