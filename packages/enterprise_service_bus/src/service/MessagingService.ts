@@ -1,5 +1,6 @@
 import { MessaginPublishSubjects, MessaginRequestSubjects } from '../enums/enums';
 import NatsMessagingBus from '../implementation/NatsMessageBus';
+import { IEvent } from '../interfaces/IEvent';
 import IMessageBus from '../interfaces/IMessageBus';
 import { IRequest } from '../interfaces/IRequest';
 import { IResponse } from '../interfaces/IResponse';
@@ -33,6 +34,12 @@ export class MessagingService {
     public static async publish(publisher: string, topic: string, payload: unknown): Promise<void> {
         await this.getInstance()._messagingClient.publish(topic, payload);
         console.log(`${publisher} has published: ${topic} ****************************************`);
+
+    }
+
+    public static async publishEvent(publisher: string, event: IEvent): Promise<void> {
+        await this.getInstance()._messagingClient.publish(event.topic, event.payload);
+        console.log(`${publisher} has published: ${event.topic} ****************************************`);
 
     }
 

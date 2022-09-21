@@ -1,6 +1,6 @@
 import express from "express";
 import 'dotenv/config';
-import { AdRequesterRequest, AdRequesterResponse, FwURlRequest } from "../../data_model/build";
+import { AdRequesterRequest, AdRequesterResponse, FwURlRequest, ExecutionEvent } from "../../data_model/build";
 import { FwUrlResponse } from "../../data_model/build";
 import { MessagingService } from "enterprise_service_bus";
 import { BeaconRequest } from "../../data_model/build";
@@ -13,6 +13,8 @@ MessagingService.init(process.env.NATS_SERVER_URL as string, SERVICE_NAME)
         const app = express();
 
         app.get("/image", async function (req, res) {
+
+            await MessagingService.publishEvent(SERVICE_NAME, new ExecutionEvent({ serviceName: '/image' }));
 
             // Getting the Fw URL
             const fwUrlResponse = await MessagingService.request(SERVICE_NAME, new FwURlRequest({ params: [1, 2, 3] })) as FwUrlResponse;
@@ -32,8 +34,9 @@ MessagingService.init(process.env.NATS_SERVER_URL as string, SERVICE_NAME)
 
 
         const port = 3000;
-        app.listen(port, () => {
+        app.listen(port, async () => {
             console.log(`${SERVICE_NAME} µService is running like a champion! Listening in the port ${port}`);
+            
         });
 
     });

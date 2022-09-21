@@ -1,4 +1,5 @@
 import { MessaginPublishSubjects, MessaginRequestSubjects } from "../enums/enums";
+import { IEvent } from "../interfaces/IEvent";
 import IMessageBus from "../interfaces/IMessageBus";
 import { IRequest } from "../interfaces/IRequest";
 import { IResponse } from "../interfaces/IResponse";
@@ -13,6 +14,9 @@ export default class KafkaMessagingBus implements IMessageBus {
         throw new Error("Method not implemented.");
     }
     publish(topic: string, payload: unknown): Promise<void> {
+        throw new Error("Method not implemented.");
+    }
+    publishEvent(event: IEvent): Promise<void> {
         throw new Error("Method not implemented.");
     }
     subscribe(serviceName: string, subject: string, callback: (err: unknown, msg: unknown) => void): Promise<void> {

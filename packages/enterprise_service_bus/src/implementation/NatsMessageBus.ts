@@ -3,6 +3,7 @@ import IMessageBus from "../interfaces/IMessageBus";
 import { Client, connect } from 'ts-nats';
 import { IRequest } from "../interfaces/IRequest";
 import { IResponse } from "../interfaces/IResponse";
+import { IEvent } from "../interfaces/IEvent";
 
 export default class NatsMessagingBus implements IMessageBus {
 
@@ -15,10 +16,10 @@ export default class NatsMessagingBus implements IMessageBus {
 
     name: string;
     constructor() {
-
         this.name = "Nats Messaging serevice";
     }
-
+    
+    
     async init(serverUrl: string, clientServiceName: string): Promise<void> {
         const start = new Date();
         this._natsClient = await connect({'url':`${serverUrl}`});
@@ -42,13 +43,14 @@ export default class NatsMessagingBus implements IMessageBus {
         this._natsClient.publish(topic, JSON.stringify(payload));
     }
 
+    async publishEvent(event: IEvent): Promise<void>{
+        this._natsClient.publish(event.topic, JSON.stringify(event.payload));
+    }
     
     async request(request: IRequest): Promise<IResponse> {
 
-
         const responseMsg = await this._natsClient.request(request.topic, this._timeout, JSON.stringify(request.payload));
         return Promise.resolve(JSON.parse(responseMsg.data));
-
     }
 
     async subscribe(serviceName: string, subject: string, callback: (err: unknown, msg: unknown) => void): Promise<void> {

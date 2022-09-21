@@ -1,12 +1,11 @@
 import 'dotenv/config';
 import Orchestrator from "./servicesOrchestrator";
 
-const SERVICE_NAME = "µ Service Ad Requester"
+const SERVICE_NAME = "µ Service Observability"
 async function init(): Promise<boolean> {
     try{
         await Orchestrator.init();
         return Promise.resolve(true);
-        
     } catch (e) {
         console.error(e);
         return Promise.resolve(false);
