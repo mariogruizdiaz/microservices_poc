@@ -1,5 +1,5 @@
 import express from 'express';
-import { JSONValue, MessagingService } from 'enterprise_service_bus';
+import { init, request } from 'service-common';
 import AdRequester, {
     Request as AdRequesterRequest,
     Response as AdRequesterResponse
@@ -15,38 +15,28 @@ import BeaconBuilder, {
 
 const SERVICE_NAME = 'Pause Ad';
 
-async function request<Req extends JSONValue, Res extends JSONValue>(
-    subject: string,
-    req: Req
-): Promise<Res> {
-    return (await MessagingService.request(subject, req)) as Res;
-}
-
-async function init(): Promise<void> {
-    await MessagingService.init(
-        process.env.NATS_SERVER_URL as string,
-        SERVICE_NAME
-    );
+(async () => {
+    await init(process.env.NATS_SERVER_URL as string, SERVICE_NAME);
 
     const app = express();
 
-    app.get('/image', async function (req, res) {
+    app.get('/image', async (req, res) => {
         // Getting the Fw URL
-        const fwUrlResponse = await request<FwUrlRequest, FwUrlResponse>(
+        const fwUrlResponse = await request<FwUrlResponse, FwUrlRequest>(
             FwUrl.RequestSubject.ComposeFreewheelURL,
             { params: [1, 2, 3] }
         );
 
         // Getting Ads
         const adRequesterResponse = await request<
-            AdRequesterRequest,
-            AdRequesterResponse
+            AdRequesterResponse,
+            AdRequesterRequest
         >(AdRequester.RequestSubject.GetAds, fwUrlResponse.fwURl);
 
         // Getting beacons for each ad in the list
         const beacons = await Promise.all(
             adRequesterResponse.ads.map((ad) =>
-                request<BeaconBuilderRequest, BeaconBuilderResponse>(
+                request<BeaconBuilderResponse, BeaconBuilderRequest>(
                     BeaconBuilder.RequestSubject.ComposeBeacon,
                     ad
                 )
@@ -62,6 +52,4 @@ async function init(): Promise<void> {
             `${SERVICE_NAME} µService is running like a champion! Listening in the port ${port}`
         );
     });
-}
-
-Promise.resolve(init());
+})();

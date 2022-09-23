@@ -4,14 +4,13 @@ import IMessageBus, {
     MessageCallback
 } from '../interfaces/IMessageBus';
 
-type AsyncJSONValueMorph = (req: JSONValue) => Promise<JSONValue>;
-
 class MessagingService {
     //#region Fields
 
     private static _instance: MessagingService = new MessagingService();
     private _messagingClient!: IMessageBus;
     private _name!: string;
+    private _url!: string;
 
     //#endregion Fields
 
@@ -27,11 +26,20 @@ class MessagingService {
         MessagingService._instance = this;
     }
 
+    public static get clientServiceName() {
+        return this.getInstance()._name;
+    }
+
+    public static get serverUrl() {
+        return this.getInstance()._url;
+    }
+
     public static async init(
         serverUrl: string,
         clientServiceName: string
     ): Promise<void> {
         this.getInstance()._messagingClient = new NatsMessagingBus();
+        this.getInstance()._url = serverUrl;
         this.getInstance()._name = clientServiceName;
         await this.getInstance()._messagingClient.init(
             serverUrl,
@@ -61,27 +69,6 @@ class MessagingService {
                 this.getInstance()._name
             } has replied: to ${subject} ****************************************`
         );
-    }
-
-    public static async setResponseFor(
-        subscriptoService: string,
-        subject: string,
-        callback: AsyncJSONValueMorph
-    ): Promise<void> {
-        return this.subscribe(subscriptoService, subject, (msg, reply) => {
-            if (!reply)
-                throw new Error(
-                    `${subscriptoService} reply not supplied by ${subject}`
-                );
-            callback(msg)
-                .then((res) => MessagingService.response(reply, res))
-                .catch((e) =>
-                    console.error(
-                        `Error during ${subscriptoService} ${subject} response`,
-                        e
-                    )
-                );
-        });
     }
 
     public static async subscribe(
@@ -138,28 +125,4 @@ class MessagingService {
     }
 }
 
-async function initializeRequestReplyPattern(
-    url: string,
-    name: string,
-    subject: string,
-    impl: AsyncJSONValueMorph
-): Promise<void> {
-    try {
-        await MessagingService.init(url, name);
-
-        await MessagingService.setResponseFor(name, subject, impl);
-        console.log(`${name} Listener ready!`);
-        console.log(`The ${name} was initialized successfully!`);
-    } catch (e) {
-        console.error(e);
-        console.log(`It was not possible to intialize the ${name}`);
-    }
-}
-
-export {
-    JSONValue,
-    MessagingService,
-    AsyncJSONValueMorph,
-    MessageCallback,
-    initializeRequestReplyPattern
-};
+export { JSONValue, MessagingService, MessageCallback };

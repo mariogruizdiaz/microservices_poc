@@ -32,6 +32,6 @@
     },
     "dependencies": {
         "dotenv": "^16.0.1",
-        "enterprise_service_bus": "^0.0.0"
+        "service-common": "^0.0.0"
     }
 }
