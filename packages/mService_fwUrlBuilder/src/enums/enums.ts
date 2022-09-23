@@ -1,4 +1,4 @@
-enum RequestSubject {
+const enum RequestSubject {
     ComposeFreewheelURL = 'COMPOSE_FW_URL'
 }
 

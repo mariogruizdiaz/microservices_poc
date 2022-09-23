@@ -1,4 +1,4 @@
-enum RequestSubject {
+const enum RequestSubject {
     GetAds = 'GET_ADS'
 }
 

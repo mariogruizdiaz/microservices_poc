@@ -1,4 +1,4 @@
-enum RequestSubject {
+const enum RequestSubject {
     ComposeBeacon = 'COMPOSE_BEACON'
 }
 

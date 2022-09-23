@@ -12,9 +12,9 @@
         "src"
     ],
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1",
+        "test": "jest",
         "build": "npx tsc --declaration",
-        "start": "npm run build && node build/index.js",
+        "start": "npm run build && node build/app.js",
         "start:dev": "nodemon",
         "lint": "eslint . --fix"
     },

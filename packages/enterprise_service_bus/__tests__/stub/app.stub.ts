@@ -6,8 +6,9 @@ describe('', () => {
     const SUBJECT = 'SUBJECT';
     beforeAll(async () => {
         await MessagingService.init(NATS, CHANNEL);
-        await MessagingService.setResponseFor(CHANNEL, SUBJECT, (msg) => {
-            if (msg == 'start') return Promise.resolve('end');
+        await MessagingService.subscribe(CHANNEL, SUBJECT, (msg, reply) => {
+            if (msg == 'start')
+                return MessagingService.response(reply as string, 'end');
             throw new Error('Not proper request');
         });
     });
